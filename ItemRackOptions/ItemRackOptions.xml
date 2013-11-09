@@ -757,11 +757,11 @@
 		</Size>
 		<Scripts>
 			<OnLoad>
-				this:RegisterForClicks("LeftButtonUp","RightButtonUp")
+				this:RegisterForClicks("LeftButtonUp","RightButtonUp","MiddleButtonUp")
 			</OnLoad>
 			<OnClick>
 				PlaySound("igMainMenuOptionCheckBoxOn")
-				ItemRackOpt.ToggleInvSelect()
+				ItemRackOpt.ToggleInvSelect(button)
 			</OnClick>
 			<OnEnter>
 				ItemRackOpt.InvOnEnter()

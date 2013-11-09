@@ -234,9 +234,54 @@ function ItemRackOpt.UpdateInv()
 	ItemRackOptSetsCurrentSetIcon:SetTexture(ItemRackOpt.selectedIcon)
 end
 
-function ItemRackOpt.ToggleInvSelect()
+StaticPopupDialogs["ItemRackCUSTOMITEMID"] = {
+	text = "Enter custom item link or numeric ID:",
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	hasEditBox = 1,
+
+	OnAccept = function(id)
+		local text = getglobal(this:GetParent():GetName().."EditBox"):GetText();
+		ItemRackOpt.Inv[id].id = tonumber(GetItemInfo(text) and select(2, GetItemInfo(text)):match("item:(%d+)") or text:match("%d+")) or 0
+		ItemRackOpt.Inv[id].selected = 1
+		ItemRackOpt.UpdateInv()
+	end,
+
+	EditBoxOnEnterPressed = function(id)
+		local text = getglobal(this:GetParent():GetName().."EditBox"):GetText();
+		ItemRackOpt.Inv[id].id = tonumber(GetItemInfo(text) and select(2, GetItemInfo(text)):match("item:(%d+)") or text:match("%d+")) or 0
+		ItemRackOpt.Inv[id].selected = 1
+		this:GetParent():Hide()
+		ItemRackOpt.UpdateInv()
+	end,
+
+	OnShow = function()
+		getglobal(this:GetName().."EditBox"):SetFocus();
+	end,
+
+	OnHide = function()
+		if ( ChatFrameEditBox:IsShown() ) then
+		  ChatFrameEditBox:SetFocus();
+		end
+		getglobal(this:GetName().."EditBox"):SetText("");
+	end,
+
+	timeout = 0,
+	exclusive = 1,
+	whileDead = 1,
+	hideOnEscape = 1
+}
+
+function ItemRackOpt.ToggleInvSelect(btn)
 	local id = this:GetID()
 	this:SetChecked(0)
+
+	if btn == "MiddleButton" then
+		local dlg = StaticPopup_Show("ItemRackCUSTOMITEMID")
+		dlg.data = id
+		return
+	end
+
 	if ItemRack.IsTimerActive("SlotMarquee") or ItemRackOptSubFrame4:IsVisible() then
 		if ItemRackOptSubFrame6:IsVisible() then
 			ItemRackOpt.BindSlot(id)
