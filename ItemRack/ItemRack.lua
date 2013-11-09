@@ -1110,6 +1110,8 @@ function ItemRack.MenuOnClick()
 			end
 		elseif ItemRackSettings.EquipToggle=="ON" or IsShiftKeyDown() then
 			ItemRack.ToggleSet(item)
+		elseif IsControlKeyDown() then
+			ItemRack.TryOnSet(item)
 		else
 			ItemRack.EquipSet(item)
 		end
@@ -1763,6 +1765,18 @@ function ItemRack.RunSetBinding(setname)
 	end
 end
 
+function ItemRack.TryOnSet(setname)
+	local set = ItemRackUser.Sets[setname]
+	if not set then return end
+
+	ShowUIPanel(DressUpFrame)
+	DressUpModel:SetUnit("player")
+
+	for _, id in pairs(set.equip) do
+		DressUpModel:TryOn(string.match(id, "%d+"))
+	end
+end
+
 --[[ Slash Handler ]]
 
 function ItemRack.SlashHandler(arg1)
@@ -1793,6 +1807,16 @@ function ItemRack.SlashHandler(arg1)
 				end
 			end
 		end
+		return
+	end
+
+	if arg1 and arg1:match("tryon") then
+		local set = string.match(arg1, "tryon (.+)")
+
+		if set then
+			ItemRack.TryOnSet(set)
+		end
+
 		return
 	end
 
