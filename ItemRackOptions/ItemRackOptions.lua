@@ -442,6 +442,30 @@ function ItemRackOpt.SaveSet()
 	ItemRackOpt.ValidateSetButtons()
 end
 
+function ItemRackOpt.SaveInspectSet(name)
+	if not InspectFrame or not InspectFrame:IsShown() then
+		return false
+	end
+
+	local setname = name or InspectNameText:GetText()
+	ItemRackUser.Sets[setname] = ItemRackUser.Sets[setname] or {}
+	local set = ItemRackUser.Sets[setname]
+	set.icon = "Interface\\Icons\\Spell_Shadow_Charm"
+	set.oldset = nil
+	set.old = {}
+	set.equip = {}
+
+	for i = 0, 19 do
+		if i ~= 4 and i ~= 19 then -- omit shirt and tabard
+			if (ItemRackTooltip:SetInventoryItem(InspectFrame.unit, i)) then
+				set.equip[i] = string.match(select(2, ItemRackTooltip:GetItem()) or "","item:(.+):%-?%d+")
+			end
+		end
+	end
+
+	return true
+end
+
 function ItemRackOpt.ValidateSetButtons()
 	ItemRackOptSetsSaveButton:Disable()
 	ItemRackOptSetsBindButton:Disable()

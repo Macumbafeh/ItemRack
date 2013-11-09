@@ -1818,6 +1818,17 @@ function ItemRack.SlashHandler(arg1)
 		end
 
 		return
+
+	elseif arg1 and arg1:match("insp") then
+		if not ItemRackOpt then
+			LoadAddOn("ItemRackOptions")
+		end
+
+		if ItemRackOpt.SaveInspectSet(string.match(arg1, "%s+(.+)")) then
+			ItemRack.Print("Set of inspected character saved.")
+		end
+
+		return
 	end
 
 	arg1 = string.lower(arg1)
