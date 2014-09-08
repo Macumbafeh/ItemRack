@@ -21,6 +21,8 @@ ItemRackUser = {
 	SetMenuWrapValue = 3, -- when to wrap the menu if user defined
 }
 
+ItemRackSetPool = {}
+
 ItemRackSettings = {
 	MenuOnShift = "OFF", -- open menus on shift only
 	MenuOnRight = "OFF", -- open menus on right-click only
@@ -1866,6 +1868,52 @@ function ItemRack.SlashHandler(arg1)
 		end
 
 		return
+
+    elseif arg1 and arg1:match("^pool") then
+        if arg1 == "pool list" then
+            ItemRack.Print("Set pool contents:")
+
+            for name in pairs(ItemRackSetPool) do
+                DEFAULT_CHAT_FRAME:AddMessage("  " .. name)
+            end
+
+            return
+        end
+
+        local subcmd, name = arg1:match("pool (%S+) (.+)")
+
+        if subcmd == "push" then
+            local set = ItemRackUser.Sets[name]
+
+            if not set then
+                ItemRack.Print("User set not found.")
+                return
+            end
+
+            for i = #ItemRackUser.Hidden, 1, -1 do
+                if ItemRackUser.Hidden[i] == name then
+                    tremove(ItemRackUser.Hidden, i)
+                end
+            end
+
+            ItemRackSetPool[name] = set
+            ItemRackUser.Sets[name] = nil
+            ItemRack.Print("Set was pushed into the pool successfully.")
+
+        elseif subcmd == "pop" then
+            local set = ItemRackSetPool[name]
+
+            if not set then
+                ItemRack.Print("Pool set not found.")
+                return
+            end
+
+            ItemRackUser.Sets[name] = set
+            ItemRackSetPool[name] = nil
+            ItemRack.Print("Set was popped from the pool successfully.")
+        end
+
+        return
 	end
 
 	arg1 = string.lower(arg1)
