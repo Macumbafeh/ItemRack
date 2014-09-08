@@ -279,6 +279,39 @@ function ItemRack.OnBankOpen()
 	ItemRack.BankOpen = 1
 end
 
+function ItemRack.OnSetBagItem(tooltip, bag, slot)
+    ItemRack.ListSetsHavingItem(tooltip, ItemRack.GetID(bag, slot))
+end
+
+function ItemRack.OnSetInventoryItem(tooltip, unit, inv_slot)
+    ItemRack.ListSetsHavingItem(tooltip, ItemRack.GetID(inv_slot))
+end
+
+function ItemRack.OnSetHyperlink(tooltip, link)
+    ItemRack.ListSetsHavingItem(tooltip, link:match("item:(.+)"))
+end
+
+do
+    local data = {}
+
+    function ItemRack.ListSetsHavingItem(tooltip, id)
+        local same_ids = ItemRack.SameID
+        if not id or id == 0 then return end
+        for name, set in pairs(ItemRackUser.Sets) do
+            for _, item in pairs(set.equip) do
+                if same_ids(item, id) then
+                    data[name] = true
+                end
+            end
+        end
+        for name in pairs(data) do
+            tooltip:AddDoubleLine("Set piece", name, 0,.6,1, 0,.6,1)
+            data[name] = nil
+        end
+        tooltip:Show()
+    end
+end
+
 function ItemRack.InitCore()
 	ItemRackUser.Sets["~Unequip"] = { equip={} }
 	ItemRackUser.Sets["~CombatQueue"] = { equip={} }
@@ -322,6 +355,10 @@ function ItemRack.InitCore()
 	hooksecurefunc("UseAction",ItemRack.newUseAction)
 	hooksecurefunc("UseItemByName",ItemRack.newUseItemByName)
 	hooksecurefunc("PaperDollFrame_OnShow",ItemRack.newPaperDollFrame_OnShow)
+
+    hooksecurefunc(GameTooltip, "SetBagItem", ItemRack.OnSetBagItem)
+    hooksecurefunc(GameTooltip, "SetInventoryItem", ItemRack.OnSetInventoryItem)
+    hooksecurefunc(GameTooltip, "SetHyperlink", ItemRack.OnSetHyperlink)
 
 	this:RegisterEvent("PLAYER_REGEN_ENABLED")
 	this:RegisterEvent("PLAYER_REGEN_DISABLED")
