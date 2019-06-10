@@ -442,15 +442,30 @@ function ItemRackOpt.SaveSet()
 	ItemRackOpt.ValidateSetButtons()
 end
 
+function ItemRackOpt.GetInspectSpec()
+	local tab, maxPts = 1, 0
+
+	for i = 1, 3 do
+		local name, icon, pts = GetTalentTabInfo(i, 1)
+		if pts > maxPts then
+			maxPts = pts
+			tab = i
+		end
+	end
+
+	return GetTalentTabInfo(tab, 1)
+end
+
 function ItemRackOpt.SaveInspectSet(name)
 	if not InspectFrame or not InspectFrame:IsShown() then
 		return false
 	end
 
-	local setname = name or InspectNameText:GetText()
+	local spec, specIcon, pts = ItemRackOpt.GetInspectSpec()
+	local setname = name or ("%s/%s"):format(InspectNameText:GetText(), spec and spec:sub(1,3) or UNKNOWN)
 	ItemRackUser.Sets[setname] = ItemRackUser.Sets[setname] or {}
 	local set = ItemRackUser.Sets[setname]
-	set.icon = "Interface\\Icons\\Spell_Shadow_Charm"
+	set.icon = specIcon or "Interface\\Icons\\Spell_Shadow_Charm"
 	set.oldset = nil
 	set.old = {}
 	set.equip = {}

@@ -22,7 +22,7 @@ a prompt for numerical item ID to be set.
 
 You can quickly save the item set of inspected character. Just use the
 `/itemrack saveinsp` slash command while inspecting someone. The created
-set will be named after the inspected character.
+set will be named after the inspected character and talent spec.
 
 ### Tooltip info
 
