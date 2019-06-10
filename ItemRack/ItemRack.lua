@@ -1869,51 +1869,70 @@ function ItemRack.SlashHandler(arg1)
 
 		return
 
-    elseif arg1 and arg1:match("^pool") then
-        if arg1 == "pool list" then
-            ItemRack.Print("Set pool contents:")
+	elseif arg1 and arg1:match("show") then
+		local _, name = strsplit(" ", arg1, 2)
+		if name and name ~= "" then
+			local set = ItemRackUser.Sets[name] or ItemRackSetPool[name]
 
-            for name in pairs(ItemRackSetPool) do
-                DEFAULT_CHAT_FRAME:AddMessage("  " .. name)
-            end
+			if set then
+				ItemRack.Print("Set " .. name .. ":")
+				for i=1,19 do
+					if set.equip[i] then
+						local item = tostring(set.equip[i]):match("^%d+")
+						DEFAULT_CHAT_FRAME:AddMessage(" - " .. (select(2, GetItemInfo(item)) or UNKNOWN))
+					end
+				end
+			else
+				ItemRack.Print("Could not find set " .. name .. ".")
+			end
+		end
 
-            return
-        end
+		return
 
-        local subcmd, name = arg1:match("pool (%S+) (.+)")
+	elseif arg1 and arg1:match("pool") then
+		ItemRack.Print("Set pool contents:")
 
-        if subcmd == "push" then
-            local set = ItemRackUser.Sets[name]
+		for name in pairs(ItemRackSetPool) do
+			DEFAULT_CHAT_FRAME:AddMessage("  " .. name)
+		end
 
-            if not set then
-                ItemRack.Print("User set not found.")
-                return
-            end
+		return
 
-            for i = #ItemRackUser.Hidden, 1, -1 do
-                if ItemRackUser.Hidden[i] == name then
-                    tremove(ItemRackUser.Hidden, i)
-                end
-            end
+	elseif arg1 and arg1:match("push") then
+		local _, name = strsplit(" ", arg1, 2)
+		local set = ItemRackUser.Sets[name]
 
-            ItemRackSetPool[name] = set
-            ItemRackUser.Sets[name] = nil
-            ItemRack.Print("Set was pushed into the pool successfully.")
+		if not set then
+			ItemRack.Print("User set not found.")
+			return
+		end
 
-        elseif subcmd == "pop" then
-            local set = ItemRackSetPool[name]
+		for i = #ItemRackUser.Hidden, 1, -1 do
+			if ItemRackUser.Hidden[i] == name then
+				tremove(ItemRackUser.Hidden, i)
+			end
+		end
 
-            if not set then
-                ItemRack.Print("Pool set not found.")
-                return
-            end
+		ItemRackSetPool[name] = set
+		ItemRackUser.Sets[name] = nil
+		ItemRack.Print("Set was pushed into the pool successfully.")
 
-            ItemRackUser.Sets[name] = set
-            ItemRackSetPool[name] = nil
-            ItemRack.Print("Set was popped from the pool successfully.")
-        end
+		return
 
-        return
+	elseif arg1 and arg1:match("pop") then
+		local _, name = strsplit(" ", arg1, 2)
+		local set = ItemRackSetPool[name]
+
+		if not set then
+			ItemRack.Print("Pool set not found.")
+			return
+		end
+
+		ItemRackUser.Sets[name] = set
+		ItemRackSetPool[name] = nil
+		ItemRack.Print("Set was popped from the pool successfully.")
+
+		return
 	end
 
 	arg1 = string.lower(arg1)
