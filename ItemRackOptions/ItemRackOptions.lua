@@ -235,7 +235,7 @@ function ItemRackOpt.UpdateInv()
 end
 
 StaticPopupDialogs["ItemRackCUSTOMITEMID"] = {
-	text = "Enter custom item link or numeric ID:",
+	text = "Enter numeric item ID:",
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	hasEditBox = 1,
@@ -253,6 +253,10 @@ StaticPopupDialogs["ItemRackCUSTOMITEMID"] = {
 		ItemRackOpt.Inv[id].selected = 1
 		this:GetParent():Hide()
 		ItemRackOpt.UpdateInv()
+	end,
+
+	EditBoxOnEscapePressed = function()
+		this:GetParent():Hide()
 	end,
 
 	OnShow = function()
