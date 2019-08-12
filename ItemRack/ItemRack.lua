@@ -286,7 +286,7 @@ function ItemRack.OnSetBagItem(tooltip, bag, slot)
 end
 
 function ItemRack.OnSetInventoryItem(tooltip, unit, inv_slot)
-    ItemRack.ListSetsHavingItem(tooltip, ItemRack.GetID(inv_slot))
+    ItemRack.ListSetsHavingItem(tooltip, ItemRack.GetID(inv_slot, nil, unit))
 end
 
 function ItemRack.OnSetHyperlink(tooltip, link)
@@ -441,12 +441,12 @@ end
 
 -- returns an ItemRack-style ID (1234:0:0:0:0:0) if an item exists, or 0 for none
 -- bag,nil = inventory slot; bag,slot = container slot
-function ItemRack.GetID(bag,slot)
+function ItemRack.GetID(bag,slot,unit)
 	local itemLink
 	if slot then
 		itemLink = GetContainerItemLink(bag,slot)
 	else
-		itemLink = GetInventoryItemLink("player",bag)
+		itemLink = GetInventoryItemLink(unit or "player",bag)
 	end
 -- hallelujah ammo slot has a link now! can remove this if no adverse effects
 --	if bag==0 and not slot and GetInventoryItemTexture("player",0) then
