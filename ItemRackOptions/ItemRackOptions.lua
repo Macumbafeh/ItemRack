@@ -460,13 +460,16 @@ function ItemRackOpt.GetInspectSpec()
 	return GetTalentTabInfo(tab, 1)
 end
 
+local inspectInfo = {}
 function ItemRackOpt.SaveInspectSet(name)
 	if not InspectFrame or not InspectFrame:IsShown() then
 		return false
 	end
 
 	local spec, specIcon, pts = ItemRackOpt.GetInspectSpec()
-	local setname = name or ("%s/%s"):format(InspectNameText:GetText(), spec and spec:sub(1,3) or UNKNOWN)
+	inspectInfo["%n"] = InspectNameText:GetText()
+	inspectInfo["%s"] = spec and spec:sub(1,3) or UNKNOWN
+	local setname = (name or "%n/%s"):gsub("%%%a", inspectInfo)
 	ItemRackUser.Sets[setname] = ItemRackUser.Sets[setname] or {}
 	local set = ItemRackUser.Sets[setname]
 	set.icon = specIcon or "Interface\\Icons\\Spell_Shadow_Charm"
