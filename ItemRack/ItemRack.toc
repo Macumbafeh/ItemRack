@@ -1,7 +1,7 @@
 ## Interface: 20400
 ## Title: ItemRack
 ## Author: Gello
-## SavedVariables: ItemRackSettings, ItemRackItems, ItemRackEvents, ItemRackSetPool
+## SavedVariables: ItemRackSettings, ItemRackItems, ItemRackEvents, ItemRackSetPool, ItemRackShared
 ## SavedVariablesPerCharacter: ItemRackUser
 ItemRack.lua
 ItemRack.xml

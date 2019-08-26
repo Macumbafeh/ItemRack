@@ -739,6 +739,9 @@
 			</Layer>
 		</Layers>
 		<Scripts>
+			<OnLoad>
+				this:RegisterForClicks("LeftButtonUp","RightButtonUp","MiddleButtonUp")
+			</OnLoad>
 			<OnEnter>
 				ItemRackOpt.SetListOnEnter()
 			</OnEnter>
@@ -746,7 +749,7 @@
 				getglobal(this:GetName().."Highlight"):Hide()
 			</OnLeave>
 			<OnClick>
-				ItemRackOpt.SelectSetList()
+				ItemRackOpt.SelectSetList(arg1, arg2)
 			</OnClick>
 		</Scripts>
 	</Button>

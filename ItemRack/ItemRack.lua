@@ -22,6 +22,10 @@ ItemRackUser = {
 }
 
 ItemRackSetPool = {}
+ItemRackShared = {
+	Players = {}, -- player name to visibility map
+	Classes = {}, -- player name to class map
+}
 
 ItemRackSettings = {
 	MenuOnShift = "OFF", -- open menus on shift only
@@ -176,6 +180,8 @@ function ItemRack.OnPlayerLogin()
 	ItemRack.InitCore()
 	ItemRack.InitButtons()
 	ItemRack.InitEvents()
+
+	ItemRack.AutoPopPool()
 end
 
 function ItemRack.OnCastingStart()
@@ -1847,6 +1853,18 @@ function ItemRack.PopPoolSet(name)
 	ItemRack.AddHidden(name)
 	set.__target = nil
 	return true
+end
+
+function ItemRack.AutoPopPool()
+	local player = UnitName("player")
+	ItemRackShared.Players[player] = true
+	ItemRackShared.Classes[player] = select(2, UnitClass("player"))
+
+	for name, set in pairs(ItemRackSetPool) do
+		if set.__target == player then
+			ItemRack.PopPoolSet(name)
+		end
+	end
 end
 
 function ItemRack.GetPoolSetName(setname)

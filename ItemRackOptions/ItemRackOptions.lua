@@ -671,9 +671,64 @@ function ItemRackOpt.PopulateSetList()
 	ItemRackOpt.SetListScrollFrameUpdate()
 end
 
+function ItemRackOpt.OnSendToPoolMenuSelect(player, ...)
+	if ItemRack.PushPoolSet(ItemRackSendSet, player) then
+		ItemRackOpt.PopulateSetList()
+	end
+end
+
+function ItemRackOpt.DecimalToHexColor(r, g, b) -- from http://wowprogramming.com/snippets/Convert_decimal_classcolor_into_hex_27
+    return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
+end
+
+function ItemRackOpt.GetClassColoredName(player)
+	local class = ItemRackShared.Classes[player]
+    local c = class and RAID_CLASS_COLORS[class]
+    return c and format("%s%s|r", ItemRackOpt.DecimalToHexColor(c.r, c.g, c.b), player) or player
+end
+
+function ItemRackOpt.ShowSendToPoolMenu(setname)
+	ItemRackSendSet = setname
+
+	ItemRackOptSendToMenuFrame = ItemRackOptSendToMenuFrame or
+		CreateFrame("Frame", "ItemRackOptSendToMenuFrame", UIParent, "UIDropDownMenuTemplate")
+
+	if not ItemRackSendToMenu then
+		local currentPlayer = UnitName("player")
+		local playerList = {}
+		ItemRackSendToMenu = {
+			{
+				text = "Send To",
+				hasArrow = true,
+				menuList = playerList,
+				owner = ItemRackOptSendToMenuFrame,
+			}
+		}
+		for name, shown in pairs(ItemRackShared.Players) do
+			if shown and name ~= currentPlayer then
+				local charMenu = {
+					text = ItemRackOpt.GetClassColoredName(name),
+					func = ItemRackOpt.OnSendToPoolMenuSelect,
+					arg1 = name,
+					owner = ItemRackOptSendToMenuFrame,
+				}
+				playerList[#playerList + 1] = charMenu
+			end
+		end
+	end
+
+	EasyMenu(ItemRackSendToMenu, ItemRackOptSendToMenuFrame, "cursor", 0, 0, "MENU")
+end
+
 -- when a set is chosen in the set list
-function ItemRackOpt.SelectSetList()
+function ItemRackOpt.SelectSetList(btn, down)
 	local setname = ItemRackOpt.SetList[this:GetID()+FauxScrollFrame_GetOffset(ItemRackOptSetListScrollFrame)]
+
+	if btn == "RightButton" then
+		ItemRackOpt.ShowSendToPoolMenu(setname)
+		return
+	end
+
 	for i=0,19 do
 		ItemRackOpt.HoldInv[i].id = ItemRackOpt.Inv[i].id
 		ItemRackOpt.HoldInv[i].selected = ItemRackOpt.Inv[i].selected
