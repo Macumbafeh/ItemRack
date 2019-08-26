@@ -1910,6 +1910,7 @@ function ItemRack.SlashHandler(arg1)
 		local name = string.match(arg1, "%s+(.+)")
 		if ItemRackOpt.SaveInspectSet(name) then
 			ItemRack.Print("Set of inspected character saved.")
+			ItemRack.AddHidden(name)
 		end
 
 		return
