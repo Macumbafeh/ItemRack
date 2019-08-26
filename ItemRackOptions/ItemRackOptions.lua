@@ -724,6 +724,12 @@ end
 function ItemRackOpt.SelectSetList(btn, down)
 	local setname = ItemRackOpt.SetList[this:GetID()+FauxScrollFrame_GetOffset(ItemRackOptSetListScrollFrame)]
 
+	if btn == "MiddleButton" then
+		ItemRack.ToggleHidden(setname)
+		ItemRackOpt.SetListScrollFrameUpdate()
+		return
+	end
+
 	if btn == "RightButton" then
 		ItemRackOpt.ShowSendToPoolMenu(setname)
 		return
