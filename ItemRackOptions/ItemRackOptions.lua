@@ -696,13 +696,10 @@ function ItemRackOpt.ShowSendToPoolMenu(setname)
 	if not ItemRackSendToMenu then
 		local currentPlayer = UnitName("player")
 		local playerNames = {}
-		local playerList = {}
 		ItemRackSendToMenu = {
 			{
 				text = "Send To",
-				hasArrow = true,
-				menuList = playerList,
-				owner = ItemRackOptSendToMenuFrame,
+				isTitle = true,
 			}
 		}
 		for name, shown in pairs(ItemRackShared.Players) do
@@ -717,10 +714,10 @@ function ItemRackOpt.ShowSendToPoolMenu(setname)
 				text = ItemRackOpt.GetClassColoredName(name),
 				func = ItemRackOpt.OnSendToPoolMenuSelect,
 				arg1 = name,
-				owner = ItemRackOptSendToMenuFrame,
 			}
-			playerList[#playerList + 1] = charMenu
+			table.insert(ItemRackSendToMenu, charMenu)
 		end
+		table.insert(ItemRackSendToMenu, { text = "Close" })
 	end
 
 	EasyMenu(ItemRackSendToMenu, ItemRackOptSendToMenuFrame, "cursor", 0, 0, "MENU")
