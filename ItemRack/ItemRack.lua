@@ -1867,6 +1867,11 @@ function ItemRack.AutoPopPool()
 	end
 end
 
+function ItemRack.RemoveAlt(player)
+	ItemRackShared.Players[player] = nil
+	ItemRackShared.Classes[player] = nil
+end
+
 function ItemRack.GetPoolSetName(setname)
 	local set = ItemRackSetPool[setname]
 	if not set then

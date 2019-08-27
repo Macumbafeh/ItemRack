@@ -687,6 +687,14 @@ function ItemRackOpt.GetClassColoredName(player)
     return c and format("%s%s|r", ItemRackOpt.DecimalToHexColor(c.r, c.g, c.b), player) or player
 end
 
+function ItemRackOpt.RemoveSendToPoolPlayer(name)
+	for i = #ItemRackSendToMenu, 1, -1 do
+		if ItemRackSendToMenu[i].arg1 == name then
+			table.remove(ItemRackSendToMenu, i)
+		end
+	end
+end
+
 function ItemRackOpt.ShowSendToPoolMenu(setname)
 	ItemRackSendSet = setname
 
@@ -714,6 +722,18 @@ function ItemRackOpt.ShowSendToPoolMenu(setname)
 				text = ItemRackOpt.GetClassColoredName(name),
 				func = ItemRackOpt.OnSendToPoolMenuSelect,
 				arg1 = name,
+				hasArrow = true,
+				menuList = {
+					{
+						text = "Remove",
+						func = function(name)
+							ItemRack.RemoveAlt(name)
+							ItemRackOpt.RemoveSendToPoolPlayer(name)
+							CloseDropDownMenus()
+						end,
+						arg1 = name,
+					}
+				}
 			}
 			table.insert(ItemRackSendToMenu, charMenu)
 		end
