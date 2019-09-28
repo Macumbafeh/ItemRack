@@ -261,6 +261,9 @@ StaticPopupDialogs["ItemRackCUSTOMITEMID"] = {
 
 	OnShow = function()
 		getglobal(this:GetName().."EditBox"):SetFocus();
+		if type(ItemRackOptEditItemId) == "number" then
+			getglobal(this:GetName().."EditBox"):SetText(tostring(ItemRackOptEditItemId))
+		end
 	end,
 
 	OnHide = function()
@@ -281,8 +284,13 @@ function ItemRackOpt.ToggleInvSelect(btn)
 	this:SetChecked(0)
 
 	if btn == "MiddleButton" then
-		local dlg = StaticPopup_Show("ItemRackCUSTOMITEMID")
-		dlg.data = id
+		if IsControlKeyDown() then
+			local invId = ItemRackOpt.Inv[id].id
+			ItemRackOptEditItemId = type(invId) == "string" and tonumber(invId:match("%d+")) or nil
+		else
+			local dlg = StaticPopup_Show("ItemRackCUSTOMITEMID")
+			dlg.data = id
+		end
 		return
 	end
 
