@@ -1925,7 +1925,7 @@ function ItemRack.SlashHandler(arg1)
 
 		return
 
-	elseif arg1 and arg1:match("insp") then
+	elseif arg1 and arg1:match("save") then
 		if not ItemRackOpt then
 			LoadAddOn("ItemRackOptions")
 		end
