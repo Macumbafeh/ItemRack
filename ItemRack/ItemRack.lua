@@ -308,13 +308,14 @@ do
         for name, set in pairs(ItemRackUser.Sets) do
             for _, item in pairs(set.equip) do
                 if same_ids(item, id) then
-                    data[name] = true
+                    tinsert(data, name)
                 end
             end
         end
-        for name in pairs(data) do
+        sort(data)
+        for i, name in ipairs(data) do
             tooltip:AddDoubleLine("Set piece", name, 0,.6,1, 0,.6,1)
-            data[name] = nil
+            data[i] = nil
         end
         tooltip:Show()
     end
